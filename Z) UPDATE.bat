@@ -1,1 +1,1 @@
-php artisan serve
+composer update
