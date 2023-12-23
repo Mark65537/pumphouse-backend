@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ResidentController;
+use App\Http\Controllers\BillController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,9 +21,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-// Assuming you have resource routes for residents, you can use this line:
+// API for residents
 Route::apiResource('residents', ResidentController::class);
 
+// API for bills
+Route::apiResource('bills', BillController::class);
 // Or if you want to define only the update route specifically:
 // Route::put('residents/{resident}', [ResidentController::class, 'update']);
 

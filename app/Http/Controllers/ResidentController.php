@@ -24,16 +24,6 @@ class ResidentController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -49,7 +39,14 @@ class ResidentController extends Controller
 
         $resident = Resident::create($validatedData);
 
-        return response()->json($resident, 201);
+        if ($resident) {
+            $resident->update($validatedData);
+            return response()->json($resident, 201);
+            // return response()->json(['message' => 'Resident created successfully.']);
+        } else {
+            return response()->json(['message' => 'Resident not created.'], 404);
+        }
+
     }
 
     /**
@@ -60,18 +57,7 @@ class ResidentController extends Controller
      */
     public function show(Resident $resident)
     {
-        return response()->json($resident);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Resident  $resident
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Resident $resident)
-    {
-        return response()->json($resident);
+        return response()->json($resident, 200, [], JSON_UNESCAPED_UNICODE); 
     }
 
     /**
