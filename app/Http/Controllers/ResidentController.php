@@ -96,7 +96,6 @@ class ResidentController extends Controller
         } else {
             return response()->json(['message' => 'Resident not found.'], 404);
         }
-                // return response()->json(['message' => 'Resident updated successfully.']);
     }
 
     /**
@@ -105,10 +104,15 @@ class ResidentController extends Controller
      * @param  \App\Models\Resident  $resident
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Resident $resident)
+    public function destroy($id)
     {
-        $resident->delete();
+        $resident = Resident::find($id);
 
-        return response()->json(null, 204);
+        if ($resident) {
+            $resident->delete();
+            return response()->json(['message' => 'Resident deleted successfully.']);
+        } else {
+            return response()->json(['message' => 'Resident not found.'], 404);
+        }
     }
 }
