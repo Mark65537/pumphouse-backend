@@ -9,20 +9,11 @@ class Resident extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+    public $timestamps = false;
     protected $fillable = [
         'fio',
         'area',
         'start_date',
     ];
-
-    /**
-     * Create a new resident instance.
-     *
-     * @param array $validatedData
-     * @return static
-     */
-    public static function create(array $validatedData)
-    {
-        return static::query()->create($validatedData);
-    }
 }

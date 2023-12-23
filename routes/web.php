@@ -17,7 +17,3 @@ use App\Http\Controllers\ResidentController;
 Route::get('/', function () {
     return redirect('/api/residents');
 });
-
-Route::prefix('api')->group(function () {
-    Route::resource('residents', ResidentController::class);
-});

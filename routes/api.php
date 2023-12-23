@@ -19,6 +19,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::prefix('residents')->group(function () {
-    Route::resource('residents', ResidentController::class);
-});
+
+// Assuming you have resource routes for residents, you can use this line:
+Route::apiResource('residents', ResidentController::class);
+
+// Or if you want to define only the update route specifically:
+// Route::put('residents/{resident}', [ResidentController::class, 'update']);
+

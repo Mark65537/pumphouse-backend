@@ -81,17 +81,22 @@ class ResidentController extends Controller
      * @param  \App\Models\Resident  $resident
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Resident $resident)
+    public function update(Request $request, $id)
     {
         $validatedData = $request->validate([
             'fio' => 'required|string|max:255',
             'area' => 'required|numeric',
             'start_date' => 'required|date',
         ]);
-
-        $resident->update($validatedData);
-
-        return response()->json($resident);
+        $resident = Resident::find($id);
+        
+        if ($resident) {
+            $resident->update($validatedData);
+            return response()->json(['message' => 'Resident updated successfully.']);
+        } else {
+            return response()->json(['message' => 'Resident not found.'], 404);
+        }
+                // return response()->json(['message' => 'Resident updated successfully.']);
     }
 
     /**
