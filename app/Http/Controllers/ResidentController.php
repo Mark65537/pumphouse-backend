@@ -30,7 +30,7 @@ class ResidentController extends Controller
             $query->where('fio', 'like', '%' . $request->get('search') . '%');
         }
         // mb_convert_encoding($result, 'ISO-8859-1', 'UTF-8');
-        return $query->get()->toJson(JSON_UNESCAPED_UNICODE);;
+        return $query->get()->toJson(JSON_UNESCAPED_UNICODE);
     }
 
     /**
