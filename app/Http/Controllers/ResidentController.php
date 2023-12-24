@@ -44,19 +44,22 @@ class ResidentController extends Controller
 
     }
     /**
-     * Display a listing of the resource.
+     * Display a listing of non-deleted residents.
      *
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
     {
-        $query = Resident::query();
-
-        if ($request->has('search')) {
-            $query->where('fio', 'like', '%' . $request->get('search') . '%');
-        }
+        // $query = Resident::query();
+        $searchTerm = $request->get('search');
+        $residents = Resident::query()
+        ->when($searchTerm, function ($query, $searchTerm) {
+            return $query->where('fio', 'like', "%{$searchTerm}%");
+        })
+        ->whereNotIn('id', DeletedResident::select('resident_id'))
+        ->get();
         // mb_convert_encoding($result, 'ISO-8859-1', 'UTF-8');
-        return $query->get()->toJson(JSON_UNESCAPED_UNICODE);
+        return $residents->toJson(JSON_UNESCAPED_UNICODE);
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use App\Models\Tarif; // Ensure this matches the namespace and class name of your Tarif model
 
 class TarifController extends Controller
@@ -10,8 +11,17 @@ class TarifController extends Controller
     // Display a listing of the resource.
     public function index()
     {
-        $query = Tarif::query();
-        return $query->get();
+        return Tarif::query()
+        ->join('periods', 'tarifs.period_id', '=', 'periods.id')
+        ->get(['periods.begin_date', 'tarifs.amount_rub'])
+        ->map(function ($tarif) {
+            $beginDate = new Carbon($tarif->begin_date);
+            return [
+                'month' => $beginDate->format('F'),
+                'year' => $beginDate->format('Y'),
+                'amount_rub' => $tarif->amount_rub
+            ];
+        });
     }
 
     // Store a newly created resource in storage.
