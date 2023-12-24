@@ -8,6 +8,15 @@ use Illuminate\Http\Request;
 class ResidentController extends Controller
 {
     /**
+     * Move resident data to deleted_residents table.
+     *
+     * @param \App\Models\Resident $resident
+     */
+    private function moveToDeletedResidents($resident)
+    {
+        DeletedResident::create($resident->toArray());
+    } 
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -97,8 +106,13 @@ class ResidentController extends Controller
         $resident = Resident::find($id);
 
         if ($resident) {
-            $resident->delete();
-            return response()->json(['message' => 'Resident deleted successfully.']);
+            try {
+                $resident->delete();
+                return response()->json(['message' => 'Resident deleted successfully.']);
+            } catch (\Exception $e) {
+                $this->moveToDeletedResidents($resident);
+                return response()->json(['message' => $e], 500);
+            }
         } else {
             return response()->json(['message' => 'Resident not found.'], 404);
         }
