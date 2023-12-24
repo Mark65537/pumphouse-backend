@@ -32,11 +32,18 @@ class TarifController extends Controller
             'amount_rub' => 'required|numeric'
         ]);
 
+        $existingTarif = Tarif::where('period_id', $validatedData['period_id'])
+                          ->first();
+
+        if ($existingTarif) {
+          $existingTarif->update(['amount_rub' => $validatedData['amount_rub']]);
+          return response()->json(['message' => 'Tarif updated successfully.'], 200);
+        } 
+
         $tarif = Tarif::create($validatedData);
-        if ($tarif ) {
-            $tarif ->update($validatedData);
-            return response()->json($tarif , 201);
-            // return response()->json(['message' => 'Resident created successfully.']);
+        if ($tarif) {
+            // return response()->json($tarif, 200 );
+            return response()->json(['message' => 'Tarif created successfully.'], 200);
         } else {
             return response()->json(['message' => 'Tarif not created.'], 404);
         }

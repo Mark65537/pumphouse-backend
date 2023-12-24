@@ -31,12 +31,14 @@ class PeriodController extends Controller
             'end_date' => 'required|date|after_or_equal:begin_date'
         ]);
 
-        $period = Period::create($validatedData);
+        // Проверка что период существует
+        $period = Period::where($validatedData)->first();
 
         if ($period) {
-            return response()->json($period, 201);
+            return response()->json($period, 200);
         } else {
-            return response()->json(['message' => 'Period not created.'], 404);
+            $period = Period::create($validatedData);
+            return response()->json($period, 200);
         }
     }
 

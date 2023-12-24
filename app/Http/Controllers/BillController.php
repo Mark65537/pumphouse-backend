@@ -4,7 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Bill;
+use App\Models\Period;
+use App\Models\Resident;
+use App\Models\Tarif;
+use App\Models\PumpMeterRecord;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class BillController extends Controller
 {
@@ -31,5 +36,74 @@ class BillController extends Controller
     public function show(Bill $bill)
     {
         return response()->json($bill, 200, [], JSON_UNESCAPED_UNICODE);
+    }
+
+    public function store(Request $request)
+    {
+        // Get the previous month's start and end dates
+        $startDate = (new Carbon('first day of last month'))->format('Y-m-d');
+        $endDate = (new Carbon('last day of last month'))->format('Y-m-d');
+
+        // получить период прошлого месяца или создать если не существует 
+        $period = $this->findOrCreatePeriod($startDate, $endDate);
+
+        // if($period) {
+        //     return response()->json($period, 200);
+        // }
+
+        $residentIds = Resident::pluck('id');        
+        $totalArea = Resident::sum('area');
+        $tarif = Tarif::where('period_id', $period->id)
+                        ->firstOrFail()
+                        ->amount_rub;
+        
+        $amountVolume = $request->amount_volume;
+
+        // if($tarif){
+        //     return response()->json($tarif, 200);
+        // }
+        // else{
+        //     return response()->json(['message' => 'Тариф не найден'], 404);
+        // }
+        foreach ($residentIds as $residentId) {
+            if (Bill::where('resident_id', $residentId)
+                  ->where('period_id', $period->id)
+                  ->exists()) {
+                continue;
+            }
+            
+            $resident = Resident::find($residentId);
+            $amountRub = $this->calculateAmountRub(
+                $amountVolume, $tarif, $totalArea, $resident->area
+            );
+            
+            $this->createBill($residentId, $period->id, $amountRub);
+        }
+        
+        //добавление общего потребления воды в PumpMeterRecord
+        PumpMeterRecord::create([
+            'period_id' => $period->id,
+            'amount_volume' => $amountVolume
+        ]);
+    }
+    private function findOrCreatePeriod($startDate, $endDate)
+    {
+        return Period::firstOrCreate(
+            ['begin_date' => $startDate, 'end_date' => $endDate]
+        );
+    }
+    private function calculateAmountRub($amountVolume, $tariff, 
+                                    $totalArea, $residentArea)
+    {
+        return ($amountVolume * $tariff / $totalArea) * $residentArea;
+    }
+
+    private function createBill($residentId, $periodId, $amountRub)
+    {
+        Bill::create([
+            'resident_id' => $residentId,
+            'period_id'   => $periodId,
+            'amount_rub'  => $amountRub
+        ]);
     }
 }

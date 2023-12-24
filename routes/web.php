@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ResidentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,5 +18,5 @@ use App\Http\Controllers\ResidentController;
 // });
 
 Route::get('/', function () {
-    return redirect('/api/residents');
+    return redirect('/api/tarifs');
 });

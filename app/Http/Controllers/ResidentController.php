@@ -75,6 +75,7 @@ class ResidentController extends Controller
         $resident = Resident::create($validatedData);
 
         if ($resident) {
+            $resident->update($validatedData);
             return response()->json($resident, 201);
             // return response()->json(['message' => 'Resident created successfully.']);
         } else {
