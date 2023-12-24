@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ResidentController;
 use App\Http\Controllers\BillController;
 use App\Http\Controllers\TarifController;
+use App\Http\Controllers\PeriodController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,8 +29,11 @@ Route::apiResource('residents', ResidentController::class);
 // API for bills
 Route::apiResource('bills', BillController::class);
 
-// API for bills
+// API for tarifs
 Route::apiResource('tarifs', TarifController::class);
+
+// API for periods
+Route::apiResource('periods', PeriodController::class);
 // Or if you want to define only the update route specifically:
 // Route::put('residents/{resident}', [ResidentController::class, 'update']);
 

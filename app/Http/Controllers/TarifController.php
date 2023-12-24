@@ -16,7 +16,7 @@ class TarifController extends Controller
         ->get(['periods.begin_date', 'tarifs.amount_rub'])
         ->map(function ($tarif) {
             $beginDate = new Carbon($tarif->begin_date);
-            return [
+            return [                
                 'month' => $beginDate->format('F'),
                 'year' => $beginDate->format('Y'),
                 'amount_rub' => $tarif->amount_rub

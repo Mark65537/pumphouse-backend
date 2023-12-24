@@ -38,11 +38,7 @@ class ResidentController extends Controller
             return response()->json(['message' => 'Resident not created.'], 404);
         }
     }
-    
-    private function getPeriodId()
-    {
 
-    }
     /**
      * Display a listing of non-deleted residents.
      *
@@ -79,7 +75,6 @@ class ResidentController extends Controller
         $resident = Resident::create($validatedData);
 
         if ($resident) {
-            $resident->update($validatedData);
             return response()->json($resident, 201);
             // return response()->json(['message' => 'Resident created successfully.']);
         } else {

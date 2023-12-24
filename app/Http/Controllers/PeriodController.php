@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Period; // Make sure you have a Period model for the periods table
+use App\Models\Period;
+use Carbon\Carbon;
 
 class PeriodController extends Controller
 {
@@ -17,16 +18,23 @@ class PeriodController extends Controller
     // Store a newly created period in storage.
     public function store(Request $request)
     {
+        if (preg_match('/^\d{4}-\d{2}$/', $request->date)) {
+            $date = Carbon::createFromFormat('Y-m', $request->date);
+            $request->merge([
+                'begin_date' => $date->startOfMonth()->toDateString(),
+                'end_date' => $date->endOfMonth()->toDateString()
+            ]);
+        }
+
         $validatedData = $request->validate([
             'begin_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:begin_date'
         ]);
 
-        $tarif = Period::create($validatedData);
-        if ($tarif ) {
-            $tarif ->update($validatedData);
-            return response()->json($tarif , 201);
-            // return response()->json(['message' => 'Resident created successfully.']);
+        $period = Period::create($validatedData);
+
+        if ($period) {
+            return response()->json($period, 201);
         } else {
             return response()->json(['message' => 'Period not created.'], 404);
         }
