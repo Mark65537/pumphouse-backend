@@ -64,20 +64,22 @@ class ResidentController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Resident  $resident
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
         $validatedData = $request->validate([
-            'fio' => 'required|string|max:255',
-            'area' => 'required|numeric',
-            'start_date' => 'required|date',
+            'fio' => 'nullable|string|max:255',
+            'area' => 'nullable|numeric',
+            'start_date' => 'nullable|date',
         ]);
         $resident = Resident::find($id);
         
         if ($resident) {
-            $resident->update($validatedData);
+            if (!empty($validatedData)) {
+                $resident->update($validatedData);
+            }
             return response()->json(['message' => 'Resident updated successfully.']);
         } else {
             return response()->json(['message' => 'Resident not found.'], 404);

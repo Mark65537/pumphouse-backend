@@ -14,6 +14,10 @@ use App\Http\Controllers\ResidentController;
 |
 */
 
+// Route::get('/', function () {
+//     return redirect('/api/bills');
+// });
+
 Route::get('/', function () {
-    return redirect('/api/bills');
+    return redirect('/api/residents');
 });
