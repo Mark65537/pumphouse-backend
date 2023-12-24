@@ -6,6 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Period extends Model
 {
+    protected $guarded = [];
+    public $timestamps = false;
+    protected $fillable = [
+        'begin_date',
+        'end_date',
+    ];
     public function bills()
     {
         return $this->hasMany(Bill::class);

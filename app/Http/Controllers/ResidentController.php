@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Resident;
 use App\Models\DeletedResident;
+use App\Models\Period;
 use Illuminate\Http\Request;
 
 class ResidentController extends Controller
@@ -15,8 +16,33 @@ class ResidentController extends Controller
      */
     private function moveToDeletedResidents($resident)
     {
-        DeletedResident::create($resident->toArray());
-    } 
+        $startDate = $resident->start_date;
+        $endDate = date('Y-m-d');
+    
+        $period = Period::firstOrCreate(
+            [
+                'begin_date' => $startDate,
+                'end_date' => $endDate
+            ],
+            ['created_at' => now()]
+        );
+        
+        $deletedResident = DeletedResident::create([
+            'resident_id' => $resident->id,
+            'period_id' => $period->id
+        ]);
+
+        if ($deletedResident) {
+            return response()->json(['message' => 'Resident move to DeletedResidents successfully.']);
+        } else {
+            return response()->json(['message' => 'Resident not created.'], 404);
+        }
+    }
+    
+    private function getPeriodId()
+    {
+
+    }
     /**
      * Display a listing of the resource.
      *
@@ -111,8 +137,11 @@ class ResidentController extends Controller
                 $resident->delete();
                 return response()->json(['message' => 'Resident deleted successfully.']);
             } catch (\Exception $e) {
-                $this->moveToDeletedResidents($resident);
-                return response()->json(['message' => $e], 500);
+                try {
+                    return $this->moveToDeletedResidents($resident);
+                } catch (\Exception $e) {
+                    return response()->json(['message' => $e], 500);
+                }
             }
         } else {
             return response()->json(['message' => 'Resident not found.'], 404);
