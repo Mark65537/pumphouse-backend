@@ -41,6 +41,7 @@ class BillController extends Controller
 
     public function store(Request $request)
     {
+        
         // Получаем начало и конец предыдущего месяца
         $startDate = (new Carbon('first day of last month'))->format('Y-m-d');
         $endDate = (new Carbon('last day of last month'))->format('Y-m-d');
@@ -48,6 +49,23 @@ class BillController extends Controller
         // получить период прошлого месяца или создать если не существует 
         $period = $this->findOrCreatePeriod($startDate, $endDate);
 
+        $amountVolume = $request->amount_volume;
+        
+        if(PumpMeterRecord::where('period_id', $period->id)->exists()){
+            return response()->json(
+                ['message' => 'Общее потребление воды уже есть в этом периоде'], 
+                404, 
+                [], 
+                JSON_UNESCAPED_UNICODE
+            );
+        }
+        //проверяем если запись не существует, то добавляем общее потребления воды в PumpMeterRecord
+        else {
+            PumpMeterRecord::create([
+                'period_id' => $period->id,
+                'amount_volume' => $amountVolume
+            ]);
+        }
         // if($period) {
         //     return response()->json($period, 200);
         // }
@@ -62,7 +80,7 @@ class BillController extends Controller
                         ->firstOrFail()
                         ->amount_rub;
         
-        $amountVolume = $request->amount_volume;
+        
 
         // if($tarif){
         //     return response()->json($tarif, 200);
@@ -85,13 +103,7 @@ class BillController extends Controller
             $this->createBill($residentId, $period->id, $amountRub);
         }
 
-        //проверяем если запись не существует, то добавляем общее потребления воды в PumpMeterRecord
-        if (!PumpMeterRecord::where('period_id', $period->id)->exists()) {
-            PumpMeterRecord::create([
-                'period_id' => $period->id,
-                'amount_volume' => $amountVolume
-            ]);
-        }
+        
         
         // Возвращаем успешное сообщение
         return response()->json(
