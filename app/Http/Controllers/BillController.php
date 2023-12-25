@@ -8,6 +8,7 @@ use App\Models\Period;
 use App\Models\Resident;
 use App\Models\Tarif;
 use App\Models\PumpMeterRecord;
+use App\Models\DeletedResident;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -40,7 +41,7 @@ class BillController extends Controller
 
     public function store(Request $request)
     {
-        // Get the previous month's start and end dates
+        // Получаем начало и конец предыдущего месяца
         $startDate = (new Carbon('first day of last month'))->format('Y-m-d');
         $endDate = (new Carbon('last day of last month'))->format('Y-m-d');
 
@@ -51,7 +52,11 @@ class BillController extends Controller
         //     return response()->json($period, 200);
         // }
 
-        $residentIds = Resident::pluck('id');        
+        // получаем удаленных дачников
+        $excludedIds = DeletedResident::pluck('resident_id');
+        // получаем всех дачников без учета удаленных
+        $residentIds = Resident::whereNotIn('id', $excludedIds)
+                           ->pluck('id');                                      
         $totalArea = Resident::sum('area');
         $tarif = Tarif::where('period_id', $period->id)
                         ->firstOrFail()
@@ -85,6 +90,8 @@ class BillController extends Controller
             'period_id' => $period->id,
             'amount_volume' => $amountVolume
         ]);
+        
+        return response()->json(['message' => 'Запись успешно добавлена'], 201);
     }
     private function findOrCreatePeriod($startDate, $endDate)
     {
