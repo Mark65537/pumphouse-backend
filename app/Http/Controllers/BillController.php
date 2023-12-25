@@ -84,14 +84,22 @@ class BillController extends Controller
             
             $this->createBill($residentId, $period->id, $amountRub);
         }
+
+        //проверяем если запись не существует, то добавляем общее потребления воды в PumpMeterRecord
+        if (!PumpMeterRecord::where('period_id', $period->id)->exists()) {
+            PumpMeterRecord::create([
+                'period_id' => $period->id,
+                'amount_volume' => $amountVolume
+            ]);
+        }
         
-        //добавление общего потребления воды в PumpMeterRecord
-        PumpMeterRecord::create([
-            'period_id' => $period->id,
-            'amount_volume' => $amountVolume
-        ]);
-        
-        return response()->json(['message' => 'Запись успешно добавлена'], 201);
+        // Возвращаем успешное сообщение
+        return response()->json(
+            ['message' => 'Запись успешно добавлена'], 
+            200, 
+            [], 
+            JSON_UNESCAPED_UNICODE
+        );
     }
     private function findOrCreatePeriod($startDate, $endDate)
     {
