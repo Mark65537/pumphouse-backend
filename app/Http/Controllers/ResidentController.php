@@ -46,7 +46,6 @@ class ResidentController extends Controller
      */
     public function index(Request $request)
     {
-        // $query = Resident::query();
         $searchTerm = $request->get('search');
         $residents = Resident::query()
         ->when($searchTerm, function ($query, $searchTerm) {
@@ -54,7 +53,7 @@ class ResidentController extends Controller
         })
         ->whereNotIn('id', DeletedResident::select('resident_id'))
         ->get();
-        // mb_convert_encoding($result, 'ISO-8859-1', 'UTF-8');
+
         return $residents->toJson(JSON_UNESCAPED_UNICODE);
     }
 
@@ -115,7 +114,7 @@ class ResidentController extends Controller
             if (!empty($validatedData)) {
                 $resident->update($validatedData);
             }
-            return response()->json(['message' => 'Resident updated successfully.']);
+            return response()->json(['message' => 'Resident updated successfully.'], 200);
         } else {
             return response()->json(['message' => 'Resident not found.'], 404);
         }
