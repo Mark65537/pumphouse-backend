@@ -8,16 +8,20 @@ use App\Models\Tarif; // Ensure this matches the namespace and class name of you
 
 class TarifController extends Controller
 {
+    
     // Display a listing of the resource.
     public function index()
     {
+        setlocale(LC_TIME, 'ru_RU.UTF-8'); // Set locale for Russian
+        Carbon::setLocale('ru'); // Set Carbon locale to Russian
+
         return Tarif::query()
         ->join('periods', 'tarifs.period_id', '=', 'periods.id')
         ->get(['periods.begin_date', 'tarifs.amount_rub'])
         ->map(function ($tarif) {
             $beginDate = new Carbon($tarif->begin_date);
-            return [                
-                'month' => $beginDate->format('F'),
+            return [
+                'month' => $beginDate->translatedFormat('F'),
                 'year' => $beginDate->format('Y'),
                 'amount_rub' => $tarif->amount_rub
             ];
