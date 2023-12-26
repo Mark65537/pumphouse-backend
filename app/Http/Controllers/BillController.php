@@ -51,21 +51,15 @@ class BillController extends Controller
 
         $amountVolume = $request->amount_volume;
         
-        if(PumpMeterRecord::where('period_id', $period->id)->exists()){
-            return response()->json(
-                ['message' => 'Общее потребление воды уже есть в этом периоде'], 
-                404, 
-                [], 
-                JSON_UNESCAPED_UNICODE
-            );
-        }
         //проверяем если запись не существует, то добавляем общее потребления воды в PumpMeterRecord
-        else {
+        if(!PumpMeterRecord::where('period_id', $period->id)->exists()){
             PumpMeterRecord::create([
                 'period_id' => $period->id,
                 'amount_volume' => $amountVolume
             ]);
         }
+        
+
         // if($period) {
         //     return response()->json($period, 200);
         // }

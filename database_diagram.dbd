@@ -1,0 +1,43 @@
+//Modify this code to update the diagram
+
+
+
+residents
+-
+id int PK
+fio varchar(100)
+area int
+start_date string
+
+
+deleted_residents
+-
+id int PK
+resident_id int FK > residents.id
+period_id int FK > periods.id
+
+bills
+-
+id int PK
+resident_id int FK > residents.id
+period_id int FK > periods.id
+amount_rub int
+
+periods
+-
+id int PK
+begin_date datetime
+end_date datetime
+
+tarif
+-
+id int PK
+period_id int FK > periods.id
+amount_rub int
+
+pump_meter_records
+-
+id int PK
+period_id int FK > periods.id
+amount_volume
+POSITION({"Customer":{"x":123,"y":123,"w":230},"Order":{"x":372,"y":-15,"w":230},"OrderLine":{"x":852,"y":32,"w":230},"re":{"x":99,"y":65,"w":230},"res":{"x":121,"y":76,"w":230},"resi":{"x":67,"y":68,"w":230},"reside":{"x":54,"y":86,"w":230},"residen":{"x":230,"y":193,"w":230},"residents":{"x":11,"y":-77,"w":230},"deleted_residents":{"x":-274,"y":-75,"w":238},"bills":{"x":331,"y":-77,"w":230},"p":{"x":367,"y":221,"w":230},"pr":{"x":227,"y":425,"w":230},"pe":{"x":69,"y":342,"w":230},"per":{"x":90,"y":10,"w":230},"peri":{"x":-24,"y":197,"w":230},"perio":{"x":331,"y":241,"w":230},"period":{"x":166,"y":268,"w":230},"periods":{"x":44,"y":153,"w":230},"tarif":{"x":316,"y":171,"w":230},"pump_meter":{"x":608,"y":286,"w":230},"pump_meter_":{"x":651,"y":289,"w":230},"pump_meter_re":{"x":447,"y":241,"w":230},"pump_meter_reco":{"x":518,"y":237,"w":230},"pump_meter_recoe":{"x":605,"y":179,"w":230},"pump_meter_recor":{"x":562,"y":245,"w":230},"pump_meter_records":{"x":-252,"y":198,"w":246}})

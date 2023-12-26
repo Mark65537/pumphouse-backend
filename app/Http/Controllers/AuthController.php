@@ -20,7 +20,9 @@ class AuthController extends Controller
             $user = Auth::user();
             $token = $user->createToken('auth-token')
                            ->plainTextToken;
-            return response()->json(['token' => $token], 200);
+            return response()->json(
+                ['user' => $user->name,
+                'token' => $token], 200);
         }
         throw ValidationException::withMessages([
             'name' => ['The provided credentials are incorrect.'],
