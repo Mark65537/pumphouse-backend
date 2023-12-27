@@ -11,7 +11,9 @@ use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
     public function login(Request $request)
-    {        
+    {    
+        // $this->createAdmin($request); return response()->json(['message' => ['admin created']], 200); //раскомментируй эту строку если нужно создать пользователя админ
+
         $request->validate([
             'name' => 'required',
             'password' => 'required',
@@ -30,7 +32,7 @@ class AuthController extends Controller
     }
 
     /**
-    * Создает пользователя admin. в API не используется
+    * Создает пользователя admin. В API не используется
     *
     * @param Request $request The incoming request.
     * @return string JSON representation of the created admin user.
