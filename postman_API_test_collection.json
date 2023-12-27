@@ -90,7 +90,7 @@
 			"name": "Period",
 			"item": [
 				{
-					"name": "New Request",
+					"name": "Create",
 					"request": {
 						"method": "GET",
 						"header": []

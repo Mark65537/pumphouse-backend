@@ -9,34 +9,50 @@
 
 <h1 align="center">Это API для проекта <a href="https://github.com/Mark65537/pumphouse-frontend">Водокачка+</a></h1>
 
-## Описание
-
-## Инструкция по запуску
-
-Для запуска локального сервера используйте файл "ZZ) RUN.bat" или команду
+# Инструкция по запуску
+Для начала у вас должен быть установлен <a href="https://www.php.net/downloads.php">php</a> и <a href="https://getcomposer.org/download/">composer</a>
+</p>
+После этого можете запустить локальный сервер используйя файл "ZZ) RUN.bat" в корне проекта или команду
 
 ```bash
 php artisan serve
 ```
-# Authentication API
+После выполнения команды запуститься локальный сервер по адресу 
+http://localhost:8000 
 
-## Login
+Порт может отличаться взависимости от машины
+# Инструкция по использованию API
+Для удобства в файле postman_API_test_collection.json 
+содержаться примеры использования всех API в 
+<a href="https://www.php.net/downloads.php">Postman</a> 
 
-The login endpoint is used to authenticate a user by their `name` and `password`. Upon successful authentication, it returns the user's name and a personal access token that can be used for subsequent API requests that require authentication.
+Список всех возможных API:
 
-### HTTP Request
+### Residents
+`GET http://localhost:8000/api/residents`</br>
+`POST http://localhost:8000/api/residents`</br>
+`PUT http://localhost:8000/api/residents/id`</br>
+`DELETE http://localhost:8000/api/residents`</br>
+### Tarif
+`GET http://localhost:8000/api/tarifs`</br>
+`POST http://localhost:8000/api/residents`</br>
+### Period
+`POST http://localhost:8000/api/periods`</br>
+### Bill
+`GET http://localhost:8000/api/bills`</br>
+`POST http://localhost:8000/api/bills`</br>
+### Auth
+`POST http://localhost:8000/api/login`</br>
 
-`POST /api/login`
-
-### Request Headers
+### Заголовок для запросов
 
 | Header | Value |
 | ------ | ----- |
 | Content-Type | application/json |
 
-### Request Body
+### Пример Тела запроса
 
-The request body should include a JSON object with the following properties:
+Тело запроса должно включать объект JSON со следующими свойствами:
 
 ```json
 {
@@ -44,15 +60,11 @@ The request body should include a JSON object with the following properties:
     "password": "your_password"
 }
 ```
-### Response Body
+### Пример успешного ответа на запрос
 
-The response will be a JSON object containing the user's name and the authentication token.
+Код: 200 OK
 
-### Successful Response
-
-Code: 200 OK
-
-Content:
+Контент:
 ```json
 {
     "user": "your_username",
@@ -60,12 +72,29 @@ Content:
 }
 ```
 
-### Example
+### Пример отправки запроса
 
-Here is an example of how to login using curl:
+Пример как залогиниться используя curl:
 
 ```bat
 curl -X POST -H "Content-Type: application/json" \
 -d '{"name": "your_username", "password": "your_password"}' \
-http://your-api-domain.com/api/login
+http://localhost:8000/api/login
 ```
+# База Данных
+В качестве базы данных используется SQLite
+
+Файл базы данных database.sqlite.
+
+Структура базы данных:
+<img src="Screens/database_diagram.png">
+
+В проекте содержаться файлы миграций. 
+
+Структура базы данных созданна с помощью <a href="https://databasediagram.com/app">Database diagram</a> содержиться
+в файле database_diagram.dbd
+
+Если возникают сложности при создании базы данных 
+в папке SQL scripts содержаться необходимые скрипты
+для создания и изменения отдельных таблиц
+
