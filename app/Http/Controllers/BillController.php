@@ -63,16 +63,31 @@ class BillController extends Controller
         // if($period) {
         //     return response()->json($period, 200);
         // }
+        try{
+            // получаем удаленных дачников
+            $excludedIds = DeletedResident::pluck('resident_id');
+            // получаем всех дачников без учета удаленных
+            $residentIds = Resident::whereNotIn('id', $excludedIds)
+                               ->pluck('id');                                                  
+        } catch (\Exception $e) {
+            //Если нет удаленных дачников, то возвращаем все
+            if ($e->getCode() == 'HY000') {
+                $residentIds = Resident::pluck('id');  
+            } else {
+                // Возвращаем неудачное сообщение
+                return response()->json(
+                    ['message' => $e], 
+                    422, 
+                    [], 
+                    JSON_UNESCAPED_UNICODE
+                );
+            }
+        }
 
-        // получаем удаленных дачников
-        $excludedIds = DeletedResident::pluck('resident_id');
-        // получаем всех дачников без учета удаленных
-        $residentIds = Resident::whereNotIn('id', $excludedIds)
-                           ->pluck('id');                                      
         $totalArea = Resident::sum('area');
         $tarif = Tarif::where('period_id', $period->id)
-                        ->firstOrFail()
-                        ->amount_rub;
+                            ->firstOrFail()
+                            ->amount_rub;
         
         
 

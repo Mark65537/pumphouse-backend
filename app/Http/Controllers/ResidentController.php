@@ -46,13 +46,22 @@ class ResidentController extends Controller
      */
     public function index(Request $request)
     {
-        $searchTerm = $request->get('search');
-        $residents = Resident::query()
-        ->when($searchTerm, function ($query, $searchTerm) {
-            return $query->where('fio', 'like', "%{$searchTerm}%");
-        })
-        ->whereNotIn('id', DeletedResident::select('resident_id'))
-        ->get();
+        try{
+            $searchTerm = $request->get('search');
+            $residents = Resident::query()
+            ->when($searchTerm, function ($query, $searchTerm) {
+                return $query->where('fio', 'like', "%{$searchTerm}%");
+            })
+            ->whereNotIn('id', DeletedResident::select('resident_id'))
+            ->get();
+        } catch (\Exception $e) {
+            //Если нет удаленных дачников, то возвращаем все
+            if ($e->getCode() == 'HY000') {
+                $residents = Resident::all();
+            } else {
+                throw $e;
+            }
+        }
 
         return $residents->toJson(JSON_UNESCAPED_UNICODE);
     }
