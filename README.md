@@ -17,10 +17,10 @@
 ```bash
 php artisan serve
 ```
-После выполнения команды запуститься локальный сервер по адресу 
+После выполнения команды запустится локальный сервер по адресу 
 http://localhost:8000 
 
-Порт может отличаться в зависимости от машины
+Порт может отличаться в зависимости от машины.
 # Инструкция по использованию API
 Для удобства, в файле postman_API_test_collection.json, 
 хранятся примеры использования всех API в 
@@ -35,7 +35,7 @@ http://localhost:8000
 `DELETE http://localhost:8000/api/residents`</br>
 ### Tarif
 `GET http://localhost:8000/api/tarifs`</br>
-`POST http://localhost:8000/api/residents`</br>
+`POST http://localhost:8000/api/tarifs`</br>
 ### Period
 `POST http://localhost:8000/api/periods`</br>
 ### Bill
