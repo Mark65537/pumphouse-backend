@@ -22,8 +22,8 @@ http://localhost:8000
 
 Порт может отличаться в зависимости от машины
 # Инструкция по использованию API
-Для удобства в файле postman_API_test_collection.json 
-содержаться примеры использования всех API в 
+Для удобства, в файле postman_API_test_collection.json, 
+хранятся примеры использования всех API в 
 <a href="https://www.php.net/downloads.php">Postman</a> 
 
 Список всех возможных API:
